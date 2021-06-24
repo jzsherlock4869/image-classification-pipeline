@@ -13,6 +13,16 @@ This repository is an easy to run and modify pipeline for image (RGB / RGBA / Mu
 - support K-fold cross validation, and inference by merging best model of each fold in voting or averaging way.
 
 
+### Requirements:
+
+```shell
+pandas==1.1.1
+torch==1.6.0
+scikit-learn==0.23.1
+PIL==7.2.0
+```
+
+
 
 ### Startups:
 
@@ -40,11 +50,13 @@ then you can use ```tail -f tr.log``` to view the training status.
 
 
 
-
 ### Aknowledgements
 
 Some of code in the repo is based on or modified from the following code:
+
 https://signate.jp/competitions/431/discussions/pytorch-example-1
+
 https://github.com/rwightman/pytorch-image-models/tree/master/timm
+
 https://github.com/albumentations-team/albumentations
 
