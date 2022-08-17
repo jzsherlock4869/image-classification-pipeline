@@ -37,18 +37,31 @@ The codebase is organized as follows:
 =============================================================
 
 [archs](./archs/) : network architectures, timm based arch TimmArch is used as default.
+
 [data](./data/)
-    [data_augment](./data/data_augment/) : augmentation functions, you can design your own aug settings
-    [simple_csv_dataloader.py](./data/simple_csv_dataloader.py) : csv file indicating label and path correspondance
-    [simple_folder_dataloader.py](./data/simple_folder_dataloader.py) : each class in each subfolder of dataroot
+
+--[data_augment](./data/data_augment/) : augmentation functions, you can design your own aug settings
+
+--[simple_csv_dataloader.py](./data/simple_csv_dataloader.py) : csv file indicating label and path correspondance
+
+--[simple_folder_dataloader.py](./data/simple_folder_dataloader.py) : each class in each subfolder of dataroot
+
 [losses](./losses/) : implement customized losses, pre-implemented focal_loss as example
+
 [metrics](./metrics/) : metrics for evaluation, e.g. Acc@1, Acc@5, Macro-F1score
+
 [models](./models/) : model class which contains data feeding, train, eval, save model, inference etc.
+
 [options](./options/)
-    [train](./options/train/) : train configs in .yml format
-    [test](./options/test/) : test configs in .yml format (input only, and save results)
+
+--[train](./options/train/) : train configs in .yml format
+
+--[test](./options/test/) : test configs in .yml format (input only, and save results)
+
 [scripts](./scripts/) : useful scripts for pre-/post-processing of datasets
+
 [utils](./utils/) : utility functions collection
+
 [train_imgcls.py](./train_imgcls.py) : train script which parses the config and run train/eval
 
 =============================================================
