@@ -1,0 +1,62 @@
+exp_name: ~
+model_type: BaselineModel
+log_dir: ./tb_logger
+save_dir: ../exps
+device: cuda
+multi_gpu: false
+
+datasets:
+  train_dataset:
+    type: SimpleCSVDataloader
+    dataroot: /home/jzsherlock/my_lab/datasets/DRAC22/train_val/dataset_B/imgs
+    csv_path: /home/jzsherlock/my_lab/datasets/DRAC22/train_val/dataset_B/b_iqa_label_train.csv
+    imgpath_colname: 'image name'
+    label_colname: 'image quality level'
+    is_append_root: true
+    augment:
+      augment_type: flip_aug
+      size: 512
+    batch_size: 10
+    num_workers: 4
+
+  val_dataset:
+    type: SimpleCSVDataloader
+    dataroot: /home/jzsherlock/my_lab/datasets/DRAC22/train_val/dataset_B/imgs
+    csv_path: /home/jzsherlock/my_lab/datasets/DRAC22/train_val/dataset_B/b_iqa_label_val.csv
+    imgpath_colname: 'image name'
+    label_colname: 'image quality level'
+    is_append_root: true
+    augment:
+      augment_type: flip_aug
+      size: 512
+
+
+train:
+  num_epoch: 100
+  model_arch:
+    type: TimmArch
+    load_path: ~
+    backbone: resnet34 #swin_large_patch4_window12_384
+    num_classes: 3
+    pretrained: false
+
+  optimizer:
+    type: Adam
+    lr: !!float 5e-4
+    weight_decay: 0
+    betas: [0.9, 0.99]
+
+  scheduler:
+    type: MultiStepLR
+    milestones: [80]
+    gamma: 0.1
+
+  criterion:
+    type: celoss
+
+  metric:
+    type: topk_acc
+    k: 1
+
+eval:
+  eval_interval: 2
