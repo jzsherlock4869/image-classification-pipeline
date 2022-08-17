@@ -41,38 +41,34 @@ open localhost with port 8123, then
 
 ## 0x02 Codebase Architecture
 The codebase is organized as follows:
++ [archs](./archs/) : network architectures, timm based arch TimmArch is used as default.
 
-=============================================================
++ [data](./data/)
 
-[archs](./archs/) : network architectures, timm based arch TimmArch is used as default.
+  + [data_augment](./data/data_augment/) : augmentation functions, you can design your own aug settings
 
-[data](./data/)
+  + [simple_csv_dataloader.py](./data/simple_csv_dataloader.py) : csv file indicating label and path correspondance
 
--- [data_augment](./data/data_augment/) : augmentation functions, you can design your own aug settings
+  + [simple_folder_dataloader.py](./data/simple_folder_dataloader.py) : each class in each subfolder of dataroot
 
--- [simple_csv_dataloader.py](./data/simple_csv_dataloader.py) : csv file indicating label and path correspondance
++ [losses](./losses/) : implement customized losses, pre-implemented focal_loss as example
 
--- [simple_folder_dataloader.py](./data/simple_folder_dataloader.py) : each class in each subfolder of dataroot
++ [metrics](./metrics/) : metrics for evaluation, e.g. Acc@1, Acc@5, Macro-F1score
 
-[losses](./losses/) : implement customized losses, pre-implemented focal_loss as example
++ [models](./models/) : model class which contains data feeding, train, eval, save model, inference etc.
 
-[metrics](./metrics/) : metrics for evaluation, e.g. Acc@1, Acc@5, Macro-F1score
++ [options](./options/)
 
-[models](./models/) : model class which contains data feeding, train, eval, save model, inference etc.
+  + [train](./options/train/) : train configs in .yml format
 
-[options](./options/)
+  + [test](./options/test/) : test configs in .yml format (input only, and save results)
 
--- [train](./options/train/) : train configs in .yml format
++ [scripts](./scripts/) : useful scripts for pre-/post-processing of datasets
 
--- [test](./options/test/) : test configs in .yml format (input only, and save results)
++ [utils](./utils/) : utility functions collection
 
-[scripts](./scripts/) : useful scripts for pre-/post-processing of datasets
++ [train_imgcls.py](./train_imgcls.py) : train script which parses the config and run train/eval
 
-[utils](./utils/) : utility functions collection
-
-[train_imgcls.py](./train_imgcls.py) : train script which parses the config and run train/eval
-
-=============================================================
 
 ## 0x03 Config Format Interpretation
 

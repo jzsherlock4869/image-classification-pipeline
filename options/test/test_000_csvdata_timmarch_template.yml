@@ -1,0 +1,26 @@
+exp_name: ~
+model_type: BaselineModel
+result_dir: ../result
+device: cuda
+
+datasets:
+  test_dataset:
+    type: InferSingleDataloader
+    dataroot: /path/to/test/imgs
+    csv_path: /path/to/test.csv
+    imgpath_colname: 'img_path'
+    is_append_root: true
+    augment:
+      augment_type: no_aug
+      size: 512
+    inv_classmap_json: ../exps/000_csvdata_timmarch_template/inv_classmap.json
+
+model_arch:
+  type: TimmArch
+  load_path: ../exps/000_csvdata_timmarch_template/ckpt/best.pth.tar
+  backbone: resnet34
+  num_classes: 3
+  pretrained: false
+
+infer:
+  use_tta: false

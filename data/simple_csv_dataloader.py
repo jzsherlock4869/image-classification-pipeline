@@ -88,4 +88,5 @@ def SimpleCSVDataloader(opt_dataloader):
     folder_dataset = SimpleCSVDataset(opt_dataloader)
     dataloader = DataLoader(folder_dataset, batch_size=batch_size, pin_memory=True, \
                             drop_last=True, shuffle=shuffle, num_workers=num_workers)
-    return dataloader
+    inv_classmap = folder_dataset.inv_classmap
+    return dataloader, inv_classmap

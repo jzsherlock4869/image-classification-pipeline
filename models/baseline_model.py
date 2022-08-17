@@ -1,9 +1,11 @@
-from pkgutil import ImpLoader
 import torch
 import torch.nn as nn
+import torch.nn.functional as F
 from tqdm import tqdm
 import cv2
+import json
 import numpy as np
+import pandas as pd
 from torch.utils.tensorboard import SummaryWriter
 
 import os, sys
@@ -29,18 +31,20 @@ class BaselineModel:
     def __init__(self, opt) -> None:
         self.opt = opt
         self.opt_dataset = opt['datasets']
-        self.opt_train = opt['train']
         self.device = opt['device']
 
-        self.num_classes = opt['train']['model_arch']['num_classes']
-        self.max_perf = 0.0
-
     def prepare_training(self):
+        self.opt_train = self.opt['train']
+        self.max_perf = 0.0
         os.makedirs(self.opt['log_dir'], exist_ok=True)
         log_path = osp.join(self.opt['log_dir'], self.opt['exp_name'])
         self.writer = SummaryWriter(log_path)
         # prepare dataloader
-        self.train_loader, self.val_loader = self.get_trainval_dataloaders(self.opt_dataset)
+        self.train_loader, self.val_loader, self.inv_classmap = self.get_trainval_dataloaders(self.opt_dataset)
+        json_path = osp.join(self.opt['save_dir'], self.opt['exp_name'], 'inv_classmap.json')
+        with open(json_path, 'w') as f_json:
+            json.dump(self.inv_classmap, f_json, indent=4)
+            print(f'[MODEL] saved classmap in {json_path}')
         # prepare network for training
         opt_model_arch = deepcopy(self.opt_train['model_arch'])
         arch_type = opt_model_arch.pop('type')
@@ -77,9 +81,10 @@ class BaselineModel:
         val_type = opt_val.pop('type')
         opt_train['phase'] = 'train'
         opt_val['phase'] = 'val'
-        train_loader = getattr(importlib.import_module('data'), train_type)(opt_train)
-        val_loader = getattr(importlib.import_module('data'), val_type)(opt_val)
-        return train_loader, val_loader
+        train_loader, inv_classmap = getattr(importlib.import_module('data'), train_type)(opt_train)
+        val_loader, inv_classmap_val = getattr(importlib.import_module('data'), val_type)(opt_val)
+        assert inv_classmap == inv_classmap_val
+        return train_loader, val_loader, inv_classmap
 
     def get_network(self, arch_type, load_path, **kwargs):
         # get torch original lr_scheduler based on their names
@@ -182,3 +187,37 @@ class BaselineModel:
             best_path = osp.join(save_dir, 'best.pth.tar')
             torch.save(self.network.state_dict(), best_path)
         return save_path
+
+    def inference(self):
+        opt_test = deepcopy(self.opt['datasets']['test_dataset'])
+        test_type = opt_test.pop('type')
+        self.test_loader, self.inv_classmap = getattr(importlib.import_module('data'), test_type)(opt_test)
+         # prepare network for inference
+        opt_model_arch = deepcopy(self.opt['model_arch'])
+        arch_type = opt_model_arch.pop('type')
+        load_path = opt_model_arch.pop('load_path') if 'load_path' in opt_model_arch else None
+        self.network = self.get_network(arch_type, load_path, **opt_model_arch).to(self.device)
+        self.network.eval()
+        result_dir = osp.join(self.opt['result_dir'], self.opt['exp_name'])
+        print(f"[MODEL] Begin inference ...")
+        result_df = pd.DataFrame()
+        with torch.no_grad():
+
+            pbar = tqdm(enumerate(self.test_loader), total=len(self.test_loader))
+            for iter_id, batch in pbar:
+            
+                cur_line = dict()
+                img = batch['img'].to(self.device)
+                img_path = batch['img_path'][0]
+                probs = F.softmax(self.network(img), dim=1)
+                pbar.set_postfix(Idx=iter_id)
+                pred_clsid = torch.argmax(probs).item()
+                pred_cls = str(self.inv_classmap[str(pred_clsid)])
+
+                cur_line['img_path'] = img_path
+                cur_line['pred_cls'] = pred_cls
+                for i in range(probs.size(-1)):
+                    cur_line['cls_' + str(self.inv_classmap[str(i)])] = probs[0, i].item()
+
+                result_df = result_df.append(cur_line, ignore_index=True)
+        result_df.to_csv(os.path.join(result_dir, 'infer_result.csv'), index=False)
