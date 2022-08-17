@@ -8,10 +8,10 @@ multi_gpu: false
 datasets:
   train_dataset:
     type: SimpleCSVDataloader
-    dataroot: /home/jzsherlock/my_lab/datasets/DRAC22/train_val/dataset_B/imgs
-    csv_path: /home/jzsherlock/my_lab/datasets/DRAC22/train_val/dataset_B/b_iqa_label_train.csv
-    imgpath_colname: 'image name'
-    label_colname: 'image quality level'
+    dataroot: /path/to/your/dataset
+    csv_path: /path/to/your/train.csv
+    imgpath_colname: 'image_path'
+    label_colname: 'label'
     is_append_root: true
     augment:
       augment_type: flip_aug
@@ -21,10 +21,10 @@ datasets:
 
   val_dataset:
     type: SimpleCSVDataloader
-    dataroot: /home/jzsherlock/my_lab/datasets/DRAC22/train_val/dataset_B/imgs
-    csv_path: /home/jzsherlock/my_lab/datasets/DRAC22/train_val/dataset_B/b_iqa_label_val.csv
-    imgpath_colname: 'image name'
-    label_colname: 'image quality level'
+    dataroot: /path/to/your/dataset
+    csv_path: /path/to/your/val.csv
+    imgpath_colname: 'image_path'
+    label_colname: 'label'
     is_append_root: true
     augment:
       augment_type: flip_aug
@@ -36,7 +36,7 @@ train:
   model_arch:
     type: TimmArch
     load_path: ~
-    backbone: resnet34 #swin_large_patch4_window12_384
+    backbone: resnet34
     num_classes: 3
     pretrained: false
 

@@ -3,11 +3,12 @@ from sklearn.model_selection import train_test_split
 import pandas as pd
 
 
-csv_path = '/home/jzsherlock/my_lab/datasets/DRAC22/train_val/dataset_B/b_iqa_label.csv'
-imgpath_colname = 'image name'
-label_colname = 'image quality level'
-val_ratio = 0.2
+csv_path = '/path/to/train_val.csv'
+imgpath_colname = 'image_path'
+label_colname = 'label'
+val_ratio = 0.2  # 20% of all samples split for evaluation, others for training
 
+# output split train/val csv in the same folder, with postfix
 train_csv_path = csv_path[:-4] + '_train.csv'
 val_csv_path = csv_path[:-4] + '_val.csv'
 

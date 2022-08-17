@@ -1,7 +1,7 @@
 #!/bin/bash
 
 opt=$1
-gpu=0
+gpu=$2
 basename=`basename $opt`
 expid=$(echo $basename | awk  '{ string=substr($0,1,3); print string; }')
 
