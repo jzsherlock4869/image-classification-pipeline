@@ -96,8 +96,8 @@ datasets:
 
   val_dataset: # val dataset params meanings the same as above
     type: SimpleCSVDataloader
-    dataroot: /home/jzsherlock/my_lab/datasets/DRAC22/train_val/dataset_B/imgs
-    csv_path: /home/jzsherlock/my_lab/datasets/DRAC22/train_val/dataset_B/b_iqa_label_val.csv
+    dataroot: /path/to/your/dataset
+    csv_path: /path/to/your/val.csv
     imgpath_colname: 'image_path'
     label_colname: 'label'
     is_append_root: true
@@ -111,7 +111,7 @@ train: # training settings, meaning as names
   model_arch:
     type: TimmArch # template only contains TimmArch, which directly implements network using timm
     load_path: ~ # if local pretrained weights are utilized
-    backbone: resnet34 #swin_large_patch4_window12_384
+    backbone: resnet34
     num_classes: 3
     pretrained: false
 
