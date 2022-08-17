@@ -1,5 +1,7 @@
 # Image-Classification-Pipeline
 
+![logo](./imgclspipeline.png)
+
 This repository is an easy to run and modify pipeline for image classification task.
 
 Write your own yaml configuration file, or use the template yaml with modifying the dataroot and related settings, then you can run with [timm](https://timm.fast.ai/) provided networks in one line:
