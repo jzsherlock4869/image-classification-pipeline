@@ -1,6 +1,11 @@
 # Image-Classification-Pipeline
 
- ![logo](./imgclspipeline.png)
+<p align="center">
+  <img src="./imgclspipeline.png" height=240>
+
+[**Installation**](#0x01-installation) | [**Codebase Architecture**](#0x02-codebase-architecture) | [**Configs**](#0x03-config-format-interpretation) | [**Dataset Prepare**](#0x04-dataset-preparation) | [**Develop by Your Own**](#0x05-customized-usage)
+
+
 
 This repository is an easy to run and modify pipeline for image classification task.
 
@@ -174,7 +179,6 @@ Write a `custom_arch.py` under `archs` folder, and import the class in `__init__
 
 
 ### add your own loss, metric etc.
-
 
 
 
