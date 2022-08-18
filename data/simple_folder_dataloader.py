@@ -33,13 +33,13 @@ class SimpleFolderDataset(Dataset):
         augment_opt = opt_dataset['augment']
         augment_type = augment_opt.pop('augment_type')
         if self.phase == 'train':
-            self.augment = importlib.import_module(f'data_augment.{augment_type}').train_augment(augment_opt)
+            self.augment = importlib.import_module(f'data_augment.{augment_type}').train_augment(**augment_opt)
         elif self.phase == 'val':
-            self.augment = importlib.import_module(f'data_augment.{augment_type}').val_augment(augment_opt)
+            self.augment = importlib.import_module(f'data_augment.{augment_type}').val_augment(**augment_opt)
         # used if OOD class (train/val subdir not complete classes)
         predefined_classmap = opt_dataset['predefined_classmap']
 
-        if not self.classmap:
+        if not predefined_classmap:
             class_names = sorted(os.listdir(self.dataroot))
             self.classmap = dict([(v, k) for k, v in enumerate(class_names)])  # {'class_1': 0}
             self.inv_classmap = dict([(k, v) for k, v in enumerate(class_names)])  # {0: 'class_1'}
@@ -53,11 +53,11 @@ class SimpleFolderDataset(Dataset):
             full_dirname = os.path.join(self.dataroot, class_name)
             class_img_paths = []
             for postfix in self.postfixs:
-                class_img_paths.append(glob(os.path.join(full_dirname, f'*.{postfix}')))
+                class_img_paths += list(glob(os.path.join(full_dirname, f'*.{postfix}')))
             # merge to all paths and labels
-            self.img_paths.append(class_img_paths)
-            self.labels.append([self.classmap[class_name] for _ in range(len(class_img_paths))])
-    
+            self.img_paths += class_img_paths
+            self.labels += [self.classmap[class_name] for _ in range(len(class_img_paths))]
+
     def __getitem__(self, index):
         cur_img_path = self.img_paths[index]
         cur_label = self.labels[index]
