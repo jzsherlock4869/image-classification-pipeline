@@ -28,7 +28,7 @@ nohup tensorboard --logdir tb_logger --port 8123 > tb.log 2>&1 &
 tail tb.log
 ```
 
-open localhost with port 8123, then
+open localhost with port 8123, then you can use tensorboard to analyse the training process.
 
 
 
@@ -40,9 +40,14 @@ open localhost with port 8123, then
 
 ## 0x01 Installation
 
+clone the current repository using git:
+```
+git clone https://github.com/jzsherlock4869/image-classification-pipeline.git
+cd image-classification-pipeline
+pip install -r requirements.txt
+```
 
-
-
+or you can use this repository as template and develop in your own way.
 
 ## 0x02 Codebase Architecture
 The codebase is organized as follows:
@@ -177,10 +182,8 @@ Write a `custom_arch.py` under `archs` folder, and import the class in `__init__
 
 ### add your own model (to change train/eval/save/inference operations)
 
+write a `custom_model.py` under `models` folder, and import in `__init__.py`. Model can be selected using `model_type` in yml config.
 
 ### add your own loss, metric etc.
 
-
-
-
-
+refer to the `metrics` and `losses` can develop your own metric and loss class.
