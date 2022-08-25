@@ -16,6 +16,7 @@ import importlib
 
 from archs.timm_arch import TimmArch
 from metrics.acc_metric import MetricTopKAcc
+from metrics.qwk_metric import MetricQuadWeightKappa
 from losses.focal_loss import FocalLoss
 from utils.net_utils import load_network
 from utils.meter_utils import AverageMeter
@@ -122,6 +123,8 @@ class BaselineModel:
     def get_metric(self, metric_type, **kwargs):
         if metric_type == 'topk_acc':
             metric = MetricTopKAcc(**kwargs)
+        elif metric_type == 'qwk':
+            metric = MetricQuadWeightKappa(**kwargs)
         else:
             raise NotImplementedError(f'metric type {metric_type} not implemented yet')
         return metric
