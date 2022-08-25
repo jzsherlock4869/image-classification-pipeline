@@ -221,3 +221,44 @@ class BaselineModel:
 
                 result_df = result_df.append(cur_line, ignore_index=True)
         result_df.to_csv(os.path.join(result_dir, 'infer_result.csv'), index=False)
+
+
+    def inference_with_tta(self):
+        opt_test = deepcopy(self.opt['datasets']['test_dataset'])
+        test_type = opt_test.pop('type')
+        self.test_loader, self.inv_classmap = getattr(importlib.import_module('data'), test_type)(opt_test)
+         # prepare network for inference
+        opt_model_arch = deepcopy(self.opt['model_arch'])
+        arch_type = opt_model_arch.pop('type')
+        load_path = opt_model_arch.pop('load_path') if 'load_path' in opt_model_arch else None
+        self.network = self.get_network(arch_type, load_path, **opt_model_arch).to(self.device)
+        self.network.eval()
+        result_dir = osp.join(self.opt['result_dir'], self.opt['exp_name'])
+        print(f"[MODEL] Begin inference ...")
+        result_df = pd.DataFrame()
+        with torch.no_grad():
+
+            pbar = tqdm(enumerate(self.test_loader), total=len(self.test_loader))
+            for iter_id, batch in pbar:
+            
+                cur_line = dict()
+                img = batch['img'].to(self.device)
+                img_path = batch['img_path'][0]
+
+                # start TTA by h-flip and v-flip
+                probs_vflip = F.softmax(self.network(torch.flip(img, dims=[2])), dim=1)
+                probs_hflip = F.softmax(self.network(torch.flip(img, dims=[3])), dim=1)
+                probs_ori = F.softmax(self.network(img), dim=1)
+                probs = (probs_vflip + probs_hflip + probs_ori) / 3.0
+
+                pbar.set_postfix(Idx=iter_id)
+                pred_clsid = torch.argmax(probs).item()
+                pred_cls = str(self.inv_classmap[str(pred_clsid)])
+
+                cur_line['img_path'] = img_path
+                cur_line['pred_cls'] = pred_cls
+                for i in range(probs.size(-1)):
+                    cur_line['cls_' + str(self.inv_classmap[str(i)])] = probs[0, i].item()
+
+                result_df = result_df.append(cur_line, ignore_index=True)
+        result_df.to_csv(os.path.join(result_dir, 'infer_result.csv'), index=False)

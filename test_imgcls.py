@@ -42,8 +42,12 @@ os.system(f'cp {config_path} {result_dir}')
 os.system(f'cp {ckpt_path} {result_dir}')
 
 model_type = opt['model_type']
+is_tta = opt['infer']['use_tta']
 # get model dynamically
 model = getattr(importlib.import_module('models'), model_type)(opt)
-model.inference()
+if not is_tta:
+    model.inference()
+else:
+    model.inference_with_tta()
 
 print('[JZSHERLOCK] all done, everything ok')
