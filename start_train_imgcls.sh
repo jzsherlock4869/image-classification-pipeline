@@ -15,4 +15,4 @@ then
     mkdir ./logs
 fi
 
-CUDA_VISIBLE_DEVICES=$gpu nohup python -u train_sareo.py --opt $opt > logs/train_${expid}_gpu${gpu}.log 2>&1 &
+CUDA_VISIBLE_DEVICES=$gpu nohup python -u train_imgcls.py --opt $opt > logs/train_${expid}_gpu${gpu}.log 2>&1 &
