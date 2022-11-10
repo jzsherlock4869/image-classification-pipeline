@@ -1,7 +1,7 @@
 # Image-Classification-Pipeline
 
 <p align="center">
-  <img src="./imgclspipeline.png" height=240>
+  <img src="./assets/imgclspipeline.png" height=240>
 
 [**Installation**](#0x01-installation) | [**Codebase Architecture**](#0x02-codebase-architecture) | [**Configs**](#0x03-config-format-interpretation) | [**Dataset Prepare**](#0x04-dataset-preparation) | [**Develop by Your Own**](#0x05-customized-usage)
 
